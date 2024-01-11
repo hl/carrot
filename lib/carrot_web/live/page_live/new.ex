@@ -10,12 +10,22 @@ defmodule CarrotWeb.PageLive.New do
   def handle_params(%{"collection_id" => collection_id}, _url, socket) do
     collection = Carrot.Repo.get!(Carrot.Collection, collection_id)
 
+    page =
+      Ecto.build_assoc(collection, :pages,
+        fields:
+          Enum.map(collection.fields, fn field ->
+            field
+            |> Map.from_struct()
+            |> Map.drop([:id, :inserted_at, :updated_at])
+          end)
+      )
+
     socket =
       assign(socket,
         page_title: "New Page",
         live_action: :new,
         collection: collection,
-        page: Ecto.build_assoc(collection, :pages)
+        page: page
       )
 
     {:noreply, socket}
@@ -30,10 +40,10 @@ defmodule CarrotWeb.PageLive.New do
       title={@page_title}
       action={@live_action}
       page={@page}
-      patch={~p"/pages"}
+      patch={~p"/collections/#{@collection}/pages"}
     />
 
-    <.back navigate={~p"/pages"}>Back to pages</.back>
+    <.back navigate={~p"/collections/#{@collection}/pages"}>Back to pages</.back>
     """
   end
 

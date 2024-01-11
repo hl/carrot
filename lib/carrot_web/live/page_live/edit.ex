@@ -35,10 +35,10 @@ defmodule CarrotWeb.PageLive.Edit do
       title={@page_title}
       action={@live_action}
       page={@page}
-      patch={~p"/pages"}
+      patch={~p"/collections/#{@collection}/pages"}
     />
 
-    <.back navigate={~p"/pages"}>Back to pages</.back>
+    <.back navigate={~p"/collections/#{@collection}/pages"}>Back to pages</.back>
     """
   end
 
